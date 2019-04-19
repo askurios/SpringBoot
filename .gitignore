@@ -10,3 +10,8 @@ buildNumber.properties
 
 # Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
 !/.mvn/wrapper/maven-wrapper.jar
+SpringBootMultipartFileUploadSample/.mvn/wrapper/maven-wrapper.jar
+SpringBootMultipartFileUploadSample/.mvn/wrapper/maven-wrapper.properties
+SpringBootMultipartFileUploadSample/.mvn/wrapper/MavenWrapperDownloader.java
+SpringBootMultipartFileUploadSample/mvnw
+SpringBootMultipartFileUploadSample/mvnw.cmd
