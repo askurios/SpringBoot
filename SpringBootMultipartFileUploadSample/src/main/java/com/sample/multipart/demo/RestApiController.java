@@ -18,34 +18,40 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 public class RestApiController {
     private static final Logger logger = LoggerFactory.getLogger(RestApiController.class);
+    private static final String FILE_HOME ="/Users/limecode/temp/files";
 
-    @RequestMapping("/uploadSuwonEvent")
-    public String uploadResources(HttpServletRequest servletRequest,
+    @RequestMapping("/uploadEvent")
+    public String uploadEvent(HttpServletRequest servletRequest,
                                   @ModelAttribute MultipartVO multipartVO,
                                   Model model) {
         multipartVO.getData();
 
-        List<MultipartFile> files = multipartVO.getFiles();
-        List<String> fileNames = new ArrayList<String>();
-
-        if (null != files && files.size() > 0) {
-            for (MultipartFile multipartFile : files) {
-
-                String fileName = multipartFile.getOriginalFilename();
-                fileNames.add(fileName);
-                File file = new File("/Users/limecode/temp/files", fileName);
-
-                logger.info(file.getAbsolutePath());
-
-                try {
-                    multipartFile.transferTo(file);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        if (null != multipartVO.getFL01()) saveFile(multipartVO.getFL01());
+        if (null != multipartVO.getFL02()) saveFile(multipartVO.getFL02());
+        if (null != multipartVO.getFL03()) saveFile(multipartVO.getFL03());
+        if (null != multipartVO.getFL04()) saveFile(multipartVO.getFL04());
+        if (null != multipartVO.getFL05()) saveFile(multipartVO.getFL05());
+        if (null != multipartVO.getFL06()) saveFile(multipartVO.getFL06());
+        if (null != multipartVO.getFL07()) saveFile(multipartVO.getFL07());
 
         return multipartVO.getData();
+    }
+
+    void saveFile(MultipartFile mfile){
+        List<String> fileNames = new ArrayList<String>();
+
+        String fileName = mfile.getOriginalFilename();
+        fileNames.add(fileName);
+
+        File file = new File(FILE_HOME, fileName);
+        logger.info(file.getAbsolutePath());
+
+        try {
+            mfile.transferTo(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
 
