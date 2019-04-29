@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -38,10 +39,16 @@ public class RestApiController {
         if (null != multipartVO.getFL06()) saveFile(multipartVO.getFL06());
         if (null != multipartVO.getFL07()) saveFile(multipartVO.getFL07());
 
+        int randomResult = RandomUtil.getResult();
 
 //        return multipartVO.getData();
 //        return ResponseEntity.ok(multipartVO.getData());
-        return ResponseEntity.status(HttpStatus.OK).body("{\"message\":\"정상\"}");
+
+        if (-10 == randomResult){
+            return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT).body("{\"resultCode\":"+randomResult+", \"message\":\"REQUEST_TIMEOUT\"}");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body("{\"resultCode\":"+randomResult+", \"message\":\"정상\"}");
     }
 
     void saveFile(MultipartFile mfile){
