@@ -2,70 +2,139 @@ package com.sample.multipart.demo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.support.StandardMultipartHttpServletRequest;
+import org.w3c.dom.Entity;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.ws.Response;
 
 @RestController
 public class RestApiController {
     private static final Logger logger = LoggerFactory.getLogger(RestApiController.class);
-    private static final String FILE_HOME ="/Users/limecode/temp/2019Suwon/files";
 
     @RequestMapping("/uploadEvent")
-    @ResponseBody
-    public ResponseEntity uploadEvent(HttpServletRequest servletRequest,
-                                              @ModelAttribute MultipartVO multipartVO,
-                                              Model model) {
-        logger.info("MultipartVO: " + multipartVO.getData());
+    public String uploadResources(HttpServletRequest servletRequest,
+                                  @ModelAttribute MultipartVO multipartVO,
+                                               Model model) {
+        multipartVO.getData();
 
-        if (null != multipartVO.getFL01()) saveFile(multipartVO.getFL01());
-        if (null != multipartVO.getFL02()) saveFile(multipartVO.getFL02());
-        if (null != multipartVO.getFL03()) saveFile(multipartVO.getFL03());
-        if (null != multipartVO.getFL04()) saveFile(multipartVO.getFL04());
-        if (null != multipartVO.getFL05()) saveFile(multipartVO.getFL05());
-        if (null != multipartVO.getFL06()) saveFile(multipartVO.getFL06());
-        if (null != multipartVO.getFL07()) saveFile(multipartVO.getFL07());
+//        ((StandardMultipartHttpServletRequest)servletRequest).getMultiFileMap().get()
+        MultipartFile files01 = multipartVO.getFL01();
+        List<MultipartFile> files02 = multipartVO.getFL02();
+        List<MultipartFile> files04 = multipartVO.getFL04();
+        List<String> fileNames02 = new ArrayList<String>();
+        List<String> fileNames04 = new ArrayList<String>();
 
-        int randomResult = RandomUtil.getResult();
+        if (null != files01) {
+//            for (MultipartFile multipartFile : files02) {
 
-//        return multipartVO.getData();
-//        return ResponseEntity.ok(multipartVO.getData());
+                String fileName = files01.getOriginalFilename();
+                fileNames02.add(fileName);
+                File file = new File("/Users/limecode/temp/2019Suwon/receivedFiles", fileName);
 
-        if (-10 == randomResult){
-            return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT).body("{\"resultCode\":"+randomResult+", \"message\":\"REQUEST_TIMEOUT\"}");
+                logger.info(file.getAbsolutePath());
+
+                try {
+                    files01.transferTo(file);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+//            }
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body("{\"resultCode\":"+randomResult+", \"message\":\"정상\"}");
+        if (null != files02 && files02.size() > 0) {
+            for (MultipartFile multipartFile : files02) {
+
+                String fileName = multipartFile.getOriginalFilename();
+                fileNames02.add(fileName);
+                File file = new File("/Users/limecode/temp/2019Suwon/receivedFiles", fileName);
+
+                logger.info(file.getAbsolutePath());
+
+                try {
+                    multipartFile.transferTo(file);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        if (null != files04 && files04.size() > 0) {
+            for (MultipartFile multipartFile : files04) {
+
+                String fileName = multipartFile.getOriginalFilename();
+                fileNames04.add(fileName);
+                File file = new File("/Users/limecode/temp/2019Suwon/receivedFiles", fileName);
+
+                logger.info(file.getAbsolutePath());
+
+                try {
+                    multipartFile.transferTo(file);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        multipartVO.setData("{\"resultMsg\":\"정상\",\"resultCode\":\"0\"}");
+        return multipartVO.getData();
+//        model.addAttribute("resultCode",0);
+//        EventSequence:1 , Response:{"resultMsg":"정상","resultCode":"0"}
+//        return "{'resultMsg':'정상','resultCode':'0'}";
+//
+//        Map map = new HashMap();
+//        map.put("resultCode",0);
+//        return "{'resultCode':'0'}";
+//        List<JSONObject> entities = new ArrayList<JSONObject>();
+//        for (Entity n : entityList) {
+//            JSONObject entity = new JSONObject();
+//            entity.put("aa", "bb");
+//            entities.add(entity);
+//        }
+//        return new ResponseEntity<Object>(entities, HttpStatus.OK);
     }
 
-    void saveFile(MultipartFile mfile){
-        List<String> fileNames = new ArrayList<String>();
+    @RequestMapping("/test")
+    public ResponseEntity<String> test(HttpServletRequest servletRequest,
+                         @ModelAttribute MultipartVO multipartVO,
+                         Model model) {
 
-        String fileName = mfile.getOriginalFilename();
-        fileNames.add(fileName);
+        model.addAttribute("resultCode",0);
+//        return model.toString();
+//        ResponseEntity<String> entity = new ResponseEntity<>();
 
-        File file = new File(FILE_HOME, fileName);
-        logger.info(file.getAbsolutePath());
+        return new ResponseEntity<String>("{'resultCode':'0'}", HttpStatus.OK);
 
-        try {
-            mfile.transferTo(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    }
 
+    @GetMapping(path = "/hello", produces=MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> sayHello() throws JSONException {
+        //Get data from service layer into entityList.
+
+        List<JSONObject> entities = new ArrayList<JSONObject>();
+//        for (Entity n : entityList) {
+            JSONObject entity = new JSONObject();
+            entity.put("aa", "bb");
+            entities.add(entity);
+//        }
+        return new ResponseEntity<Object>(entities, HttpStatus.OK);
     }
 
 
