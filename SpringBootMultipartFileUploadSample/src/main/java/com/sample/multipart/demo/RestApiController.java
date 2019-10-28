@@ -35,63 +35,80 @@ public class RestApiController {
                                                Model model) {
         multipartVO.getData();
 
-//        ((StandardMultipartHttpServletRequest)servletRequest).getMultiFileMap().get()
         MultipartFile files01 = multipartVO.getFL01();
-        List<MultipartFile> files02 = multipartVO.getFL02();
-        List<MultipartFile> files04 = multipartVO.getFL04();
-        List<String> fileNames02 = new ArrayList<String>();
-        List<String> fileNames04 = new ArrayList<String>();
+        MultipartFile files02 = multipartVO.getFL02();
+        MultipartFile files03 = multipartVO.getFL03();
+        MultipartFile files04 = multipartVO.getFL04();
+        MultipartFile files05 = multipartVO.getFL05();
+        MultipartFile files06 = multipartVO.getFL06();
+        MultipartFile files07 = multipartVO.getFL07();
 
-        if (null != files01) {
+        transferFile(files01);
+        transferFile(files02);
+        transferFile(files03);
+        transferFile(files04);
+        transferFile(files05);
+        transferFile(files06);
+        transferFile(files07);
+
+
+
+
+//        List<MultipartFile> files02 = multipartVO.getFL02();
+//        List<MultipartFile> files04 = multipartVO.getFL04();
+//        List<String> fileNames02 = new ArrayList<String>();
+//        List<String> fileNames04 = new ArrayList<String>();
+
+//        if (null != files01) {
+////            for (MultipartFile multipartFile : files02) {
+//
+//                String fileName = files01.getOriginalFilename();
+//                fileNames02.add(fileName);
+//                File file = new File("/Users/limecode/temp/2019Suwon/receivedFiles", fileName);
+//
+//                logger.info(file.getAbsolutePath());
+//
+//                try {
+//                    files01.transferTo(file);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+////            }
+//        }
+//
+//        if (null != files02 && files02.size() > 0) {
 //            for (MultipartFile multipartFile : files02) {
-
-                String fileName = files01.getOriginalFilename();
-                fileNames02.add(fileName);
-                File file = new File("/Users/limecode/temp/2019Suwon/receivedFiles", fileName);
-
-                logger.info(file.getAbsolutePath());
-
-                try {
-                    files01.transferTo(file);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+//
+//                String fileName = multipartFile.getOriginalFilename();
+//                fileNames02.add(fileName);
+//                File file = new File("/Users/limecode/temp/2019Suwon/receivedFiles", fileName);
+//
+//                logger.info(file.getAbsolutePath());
+//
+//                try {
+//                    multipartFile.transferTo(file);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
 //            }
-        }
-
-        if (null != files02 && files02.size() > 0) {
-            for (MultipartFile multipartFile : files02) {
-
-                String fileName = multipartFile.getOriginalFilename();
-                fileNames02.add(fileName);
-                File file = new File("/Users/limecode/temp/2019Suwon/receivedFiles", fileName);
-
-                logger.info(file.getAbsolutePath());
-
-                try {
-                    multipartFile.transferTo(file);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        if (null != files04 && files04.size() > 0) {
-            for (MultipartFile multipartFile : files04) {
-
-                String fileName = multipartFile.getOriginalFilename();
-                fileNames04.add(fileName);
-                File file = new File("/Users/limecode/temp/2019Suwon/receivedFiles", fileName);
-
-                logger.info(file.getAbsolutePath());
-
-                try {
-                    multipartFile.transferTo(file);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+//        }
+//
+//        if (null != files04 && files04.size() > 0) {
+//            for (MultipartFile multipartFile : files04) {
+//
+//                String fileName = multipartFile.getOriginalFilename();
+//                fileNames04.add(fileName);
+//                File file = new File("/Users/limecode/temp/2019Suwon/receivedFiles", fileName);
+//
+//                logger.info(file.getAbsolutePath());
+//
+//                try {
+//                    multipartFile.transferTo(file);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
 
         multipartVO.setData("{\"resultMsg\":\"정상\",\"resultCode\":\"0\"}");
         return multipartVO.getData();
@@ -109,6 +126,23 @@ public class RestApiController {
 //            entities.add(entity);
 //        }
 //        return new ResponseEntity<Object>(entities, HttpStatus.OK);
+    }
+
+    private void transferFile(MultipartFile multifile) {
+        if (multifile == null) {
+            return;
+        }
+        String fileName = multifile.getOriginalFilename();
+//                fileNames02.add(fileName);
+        File file = new File("/Users/limecode/temp/2019Suwon/receivedFiles", fileName);
+
+        logger.info(file.getAbsolutePath());
+
+        try {
+            multifile.transferTo(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @RequestMapping("/test")
